@@ -1,17 +1,25 @@
 import pygame
 import time
+import sys
 clock = pygame.time.Clock()
-pygame.init()
+import pygame
+import time
+import sys
 
-#, 'orange','yellow',"green",'blue','white'
-win = pygame.display.set_mode((500, 480))
-#C:\Users\Dylan\Documents\python\py vs
+win = pygame.display.set_mode((300, 300))
+CrossSprite = pygame.image.load('C://Users//Dylan//Documents//python//py vs//sprites//X.png')
+NaughtSprite = pygame.image.load('C://Users//Dylan//Documents//python//py vs//sprites//O.png')
 pygame.display.set_caption("First Game")
 
-#blocks = [picBlank,picBlank,picBlank,picBlank,picBlank,picBlank,picBlank,picBlank,picBlank,]
-#picBlank
-#picCross
-#picNought.png
+picBlank = "picBlank"
+blocks = [picBlank,picBlank,picBlank
+        ,picBlank,picBlank,picBlank
+        ,picBlank,picBlank,picBlank]
+
+strblocks = [picBlank,picBlank,picBlank
+        ,picBlank,picBlank,picBlank
+        ,picBlank,picBlank,picBlank]
+
 red = pygame.draw.rect(win, (255, 0, 0), (0, 0, 100, 100), 3) 
 green = pygame.draw.rect(win, (0, 255, 0), (100, 0, 100, 100), 3)
 blue = pygame.draw.rect(win, (0, 0, 255), (200, 0, 100, 100), 3) 
@@ -23,31 +31,55 @@ white = pygame.draw.rect(win, (255, 255, 255), (100, 200, 100, 100), 3)
 pink = pygame.draw.rect(win, (231, 95, 248), (200, 200, 100, 100), 3)
 
 
-
-xb = 0
-yb = 0
+naughtcount = 0
 run = True
 click = False
 cross = False
 counterXCASE = 0
 counterYCASE = 0
-def draw():
-    #for i in 3: FOR Y
-    #x = 0
-    # y = 0
-    # for i2 in 3: FOR X 
-        #win.blit(blocks[COUNTER+=1], (x, y))
-        # X += 100
-    #X = 0
-    # Y += 100
-    
-
-    
+def draw(naughtcount):
+    inc = -1
+    x = 0
+    y = 0
+    for i in range(0, 3): #FOR Y
+        for i2 in range(0, 3): #FOR X 
+            inc = inc+ 1
+            pic = blocks[inc]
+            if pic != "picBlank":
+                win.blit(pic, (x, y))
+                naughtcount += 1
+            x += 100
+        x = 0
+        y += 100
+    if naughtcount >= 3:
+        #start checking for winners
+        winnerCheckpart1()
     pygame.display.update()
 
-def putdown(row, collum):
-    if cross:
-        #row + collum - 2 = postion in array (array of blocks)
+        
+def wincheckpart2(a,b,c):
+    if a and b and c != picBlank:
+            if a == b and a == c:
+                print("winner!!")
+                return True
+            else:
+                return False
+
+def winnerCheckpart1():
+    for i  in range(0,9,3):#rows
+        row1 = strblocks[i]
+        row2 = strblocks[i+1]
+        row3 =strblocks[i+2]
+        rowWinner = wincheckpart2(row1,row2,row3)
+        return rowWinner
+    #for i  in range(0,3):#collums
+        #collum1 = strblocks[i]
+        #collum2 = strblocks[i+3]
+        #collum3 =strblocks[i+3]
+        #collumWinner = wincheckpart2(collum1,collum2,collum3)
+        #return collumWinner
+
+        
 
 
 
@@ -63,12 +95,20 @@ def squareCheck(cur, x):
         #bottomRow = True        
         return 3
 
+def boxfinder(row, collum, Sprite,cn):
+    if row == 1:
+        box = row + collum - 2
+    elif row == 2:
+        box = row +collum
+    else:
+        box  = row + collum + 2
+    blocks[box] = Sprite
+    strblocks[box] = cn
 
 while run:
     cur = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     clock.tick(60)
-    pygame.time.delay(100)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -76,17 +116,16 @@ while run:
             collum = squareCheck(cur, 0)
             row= squareCheck(cur, 1)
             if cross:
-                print("put a cross","row =", row,"collum = ",collum)
+                c = "Cross"
+                boxfinder(row, collum, CrossSprite, c)
                 cross = False
             else:
-                print("put a nort","row =", row,"collum = ",collum)
+                n = "Naught"
+                boxfinder(row, collum, NaughtSprite, n)
                 cross = True
             
-            #check what square has been clicked
 
-        
-
-    draw()
+    draw(naughtcount)
 
 
 pygame.QUIT
