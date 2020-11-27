@@ -18,6 +18,7 @@ screen_shake = 0
 clock=pygame.time.Clock()
 
 
+
 StartSprite1 = pygame.image.load('C://Users//Dylan//Documents//python//pygame game//Sprites//start button 1.png')
 StartSpritePushed= pygame.image.load('C://Users//Dylan//Documents//python//pygame game//Sprites//start button pushed.png')
 StopSprite1 = pygame.image.load('C://Users//Dylan//Documents//python//pygame game//Sprites//stop button 1.png')
@@ -59,6 +60,8 @@ while menu:
 
 win.fill((0,0,0))
 pygame.display.update()
+x = 1050
+y = 480
 
 #<-------------------MENU------------------------->
 
@@ -66,8 +69,10 @@ pygame.display.update()
 
 
 #<------------------GAME-------------------------->
-
-
+def draw(x,y,renderOffset):
+    win.blit(bgStart,renderOffset)
+    win.blit(playerNormal,(x,y))
+    pygame.display.update()
 
 
 Game = True
@@ -79,14 +84,17 @@ while Game:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             Game = False
-        if start:
-            renderOffset = [0,0]
-            win.blit(playerNormal,(1050,480))
-            pygame.display.update()
+    if start:
+        if keys[pygame.K_d]:
+            x += 5
+        if keys[pygame.K_a]:
+            x -= 5
+        renderOffset = [0,0]
+        draw(x,y,renderOffset)
+        
 
 
     if stone:
-        print(counter)
         if counter != 200:
             if counter == 50:
                 time.sleep(2)
@@ -110,6 +118,7 @@ while Game:
             stone = False
             start = True
     
+
 
     clock.tick(60)
 pygame.quit()
