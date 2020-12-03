@@ -4,15 +4,17 @@ from pygame.locals import *
 
 pygame.init()
 
-win = pygame.display.set_mode((0, 0), pygame.RESIZABLE|pygame.DOUBLEBUF)
+win = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 pygame.display.set_caption("Kito")
 
 menu = True
 stone = True
 player = False
-buttonStart = False
+buttonStart = False                     
 ButtonStop = False
 start = False
+right = False
+left = False
 counter = 0
 screen_shake = 0
 clock=pygame.time.Clock()
@@ -24,12 +26,12 @@ StartSpritePushed= pygame.image.load('C://Users//Dylan//Documents//python//pygam
 StopSprite1 = pygame.image.load('C://Users//Dylan//Documents//python//pygame game//Sprites//stop button 1.png')
 StopSpritePushed= pygame.image.load('C://Users//Dylan//Documents//python//pygame game//Sprites//stop button pushed.png')
 bgStart= pygame.image.load('C://Users//Dylan//Documents//python//pygame game//Sprites//bg.png')
-
+bgnext= pygame.image.load('C://Users//Dylan//Documents//python//pygame game//Sprites//bg.png')
 
 #<---------------PLAYER SPRITES------------------>
 
 playerStone= pygame.image.load('C://Users//Dylan//Documents//python//pygame game//Sprites//PLAYER//PLAYERSTONE.png')
-playerNormal= pygame.image.load('C://Users//Dylan//Documents//python//pygame game//Sprites//PLAYER//PLAYERNORMAL.png')
+playerNormal= pygame.image.load('C://Users//Dylan//Documents//python//pygame game//Sprites//PLAYER//PLAYERSTILL.png')
 
 #<---------------PLAYER SPRITES------------------>
 #C:\Users\Dylan\Documents\python\pygame game\Sprites
@@ -60,17 +62,25 @@ while menu:
 
 win.fill((0,0,0))
 pygame.display.update()
-x = 1050
-y = 480
-
+x = 100
+y = 870
+xVal2 = 1920
+yVal2 = 0
+xVal1 = 0
+yVal1 = 0
 #<-------------------MENU------------------------->
 
 
 
-
+#if you see this the commit worked
 #<------------------GAME-------------------------->
-def draw(x,y,renderOffset):
+def draw(x,y,right,left,xVal2,yVal2,xVal1,yVal1):  
+    win.fill((0,0,0))                                                                      
+    renderOffset = [xVal1, yVal1]#starts at 0,0
+    renderOffset2 = [xVal2,yVal2]#starts at 1920,0
+    print(renderOffset2)
     win.blit(bgStart,renderOffset)
+    win.blit(bgnext,renderOffset2)
     win.blit(playerNormal,(x,y))
     pygame.display.update()
 
@@ -79,18 +89,28 @@ Game = True
 while Game:
     keys=pygame.key.get_pressed()
     if stone:
-        win.blit(playerStone,(1050,480))
+        win.blit(playerStone,(100,870))
         pygame.display.update()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             Game = False
     if start:
         if keys[pygame.K_d]:
-            x += 5
+            if xVal1 <= -1920:
+                xVal1 = 1920
+            elif xVal2 <= -1920:
+                xVal2 = 1920
+            else:
+                xVal1 -= 10
+                xVal2 -= 10
         if keys[pygame.K_a]:
-            x -= 5
-        renderOffset = [0,0]
-        draw(x,y,renderOffset)
+            if xVal2 >= 1920:
+                xVal2 = -1920
+            elif xVal1 >= 1920:
+                xVal1 = -1920
+            xVal1 += 10
+            xVal2 += 10
+        draw(x,y,right,left,xVal2,yVal2,xVal1,yVal1)
         
 
 
@@ -112,6 +132,7 @@ while Game:
             if screen_shake:
                 renderOffset[0] = random.randint(0,8) - 4
                 renderOffset[1] = random.randint(0,8) - 4
+            win.blit(bgnext,(1920,0))
             win.blit(bgStart,renderOffset)
             pygame.display.update()
         else:
